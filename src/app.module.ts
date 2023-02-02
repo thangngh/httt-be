@@ -5,6 +5,9 @@ import { AppService } from './app.service';
 import { DatabaseModule } from './database/database.module';
 import { UserModule } from './user/user.module';
 import { AuthModule } from './auth/auth.module';
+import { PositionModule } from './position/position.module';
+import { MonthModule } from './month/month.module';
+import { SalaryUserModule } from './salary-user/salary-user.module';
 
 @Module({
   imports: [
@@ -13,9 +16,12 @@ import { AuthModule } from './auth/auth.module';
     }),
     DatabaseModule,
     UserModule,
-    AuthModule
+    AuthModule,
+    PositionModule,
+    MonthModule,
+    SalaryUserModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

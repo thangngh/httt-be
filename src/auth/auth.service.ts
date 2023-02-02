@@ -1,4 +1,9 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/user/entities/user.entity';
@@ -11,15 +16,15 @@ export class AuthService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    private readonly jwtService: JwtService
-  ) { }
+    private readonly jwtService: JwtService,
+  ) {}
 
   async login(body: ILogin) {
     const { username, password } = body;
     const user = await this.userRepository.findOne({
       where: {
-        username
-      }
+        username,
+      },
     });
 
     const isMatch = await user?.validatePassword(password as string);
@@ -27,7 +32,6 @@ export class AuthService {
     if (!isMatch || !user) {
       throw new HttpException('Wrong username or password', 401);
     }
-
 
     const payload = { id: user.id, username: user.username };
 
@@ -39,19 +43,26 @@ export class AuthService {
   }
 
   async register(payload: IRegister) {
-    const userDB = await this.userRepository.createQueryBuilder('user')
+    console.log(1232);
+    const userDB = await this.userRepository
+      .createQueryBuilder('user')
       .where('user.username = :username', { username: payload.username })
       .orWhere('user.email = :email', { email: payload.email })
       .getOne();
 
     if (userDB?.username === payload.username) {
-      throw new HttpException(`Username ${payload.username}  already exists`, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        `Username ${payload.username}  already exists`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
 
     if (userDB?.email === payload.email) {
-      throw new HttpException(`Email ${payload.email}  already exists`, HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        `Email ${payload.email}  already exists`,
+        HttpStatus.BAD_REQUEST,
+      );
     }
-
     const passwordLength = payload.password?.length;
 
     if (passwordLength <= 8 && payload.password) {
@@ -60,23 +71,33 @@ export class AuthService {
       );
     }
 
-    if ((!!/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/g.test(payload.password) === false) && payload.password) {
+    if (
+      !!/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,}$/g.test(
+        payload.password,
+      ) === false &&
+      payload.password
+    ) {
       throw new UnauthorizedException(
         `Password must contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character`,
       );
     }
 
-    const passwordExits = payload.password ? payload.password : "unknown password";
+    const passwordExits = payload.password
+      ? payload.password
+      : 'unknown password';
     const userDto = new User({
       firstname: payload.firstname,
       lastname: payload.lastname,
       email: payload.email,
       username: payload.username,
       password: passwordExits,
-      isactive: payload.isactive
-    })
+      avatar: payload.avatar,
+      isactive: payload.isactive,
+      positionId: payload.positionId,
+    });
 
-    await this.userRepository.createQueryBuilder("user")
+    await this.userRepository
+      .createQueryBuilder('user')
       .insert()
       .into(User)
       .values(userDto)
@@ -84,15 +105,14 @@ export class AuthService {
 
     return {
       status: HttpStatus.CREATED,
-      content: 'Create user successful'
+      content: 'Create user successful',
     };
-
   }
-
 
   async verifyPayload(payload: JwtPayload): Promise<User> {
     try {
-      const builder = await this.userRepository.createQueryBuilder('user')
+      const builder = await this.userRepository
+        .createQueryBuilder('user')
         .where('user.id = :id', { id: payload.id })
         .getOne();
 
@@ -100,7 +120,7 @@ export class AuthService {
     } catch (error) {
       throw new UnauthorizedException(`
 				Unauthorized access with payload: ${JSON.stringify(payload.username)}
-			`)
+			`);
     }
   }
 }
