@@ -14,15 +14,25 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('month')
 @Controller('month')
 export class MonthController {
-  constructor(private readonly monthService: MonthService) {}
+  constructor(private readonly monthService: MonthService) { }
 
   @Get('/get-all')
   findAll() {
     return this.monthService.findAll();
   }
 
+  @Get('/get-all-salary')
+  findAllSalary() {
+    return this.monthService.findAllSalary();
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.monthService.findOne(+id);
+  }
+
+  @Get("/filter/:id")
+  filter(@Param("id") id: string) {
+    return this.monthService.filterMonth(+id)
   }
 }

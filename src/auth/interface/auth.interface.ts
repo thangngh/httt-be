@@ -7,6 +7,7 @@ export interface IRegister {
   isactive?: boolean;
   avatar?: string;
   positionId?: number;
+  stateId?: number;
 }
 
 export interface ILogin {

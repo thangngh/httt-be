@@ -14,17 +14,17 @@ import { ApiTags } from '@nestjs/swagger';
 @ApiTags('salary')
 @Controller('salary-user')
 export class SalaryUserController {
-  constructor(private readonly salaryUserService: SalaryUserService) {}
+  constructor(private readonly salaryUserService: SalaryUserService) { }
 
   @Post('/create')
   create(@Body() createSalaryUserDto: CreateSalaryUserDto) {
     return this.salaryUserService.create(createSalaryUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.salaryUserService.findAll();
-  }
+  // @Get()
+  // findAll() {
+  //   return this.salaryUserService.findAll();
+  // }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

@@ -26,4 +26,7 @@ export class AuthCredentialsDto implements IRegister {
 
   @IsOptional()
   readonly positionId?: number;
+
+  @IsOptional()
+  readonly stateId?: number;
 }

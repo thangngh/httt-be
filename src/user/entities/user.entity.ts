@@ -5,6 +5,7 @@ import {
   Column,
   Entity,
   JoinColumn,
+  ManyToOne,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -39,17 +40,26 @@ export class User extends BaseEntity {
   })
   isactive: boolean;
 
-  @Column()
+  @Column({
+    nullable: true
+  })
   avatar: string;
 
   @Column()
   positionId: number;
 
-  @OneToOne((type) => Position, (position) => position.user)
+  @Column({
+    nullable: true
+  })
+  stateId: number;
+
+  @ManyToOne((type) => Position, (position) => position.user)
   @JoinColumn({
     name: 'positionId',
   })
   position!: Position;
+
+
 
   @OneToMany(() => SalaryUser, (salaryUser) => salaryUser.user)
   salaryUser!: SalaryUser[];

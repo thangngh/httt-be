@@ -17,7 +17,7 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
-  ) {}
+  ) { }
 
   async login(body: ILogin) {
     const { username, password } = body;
@@ -43,7 +43,6 @@ export class AuthService {
   }
 
   async register(payload: IRegister) {
-    console.log(1232);
     const userDB = await this.userRepository
       .createQueryBuilder('user')
       .where('user.username = :username', { username: payload.username })
@@ -81,7 +80,6 @@ export class AuthService {
         `Password must contain at least 1 uppercase, 1 lowercase, 1 number and 1 special character`,
       );
     }
-
     const passwordExits = payload.password
       ? payload.password
       : 'unknown password';
@@ -94,6 +92,7 @@ export class AuthService {
       avatar: payload.avatar,
       isactive: payload.isactive,
       positionId: payload.positionId,
+      stateId: payload.stateId
     });
 
     await this.userRepository

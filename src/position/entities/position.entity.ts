@@ -1,5 +1,5 @@
 import { User } from 'src/user/entities/user.entity';
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Position {
@@ -12,6 +12,6 @@ export class Position {
   @Column()
   salary: string;
 
-  @OneToOne(() => User, (user) => user.position)
-  user: User;
+  @OneToMany(() => User, (user) => user.position)
+  user: User[];
 }

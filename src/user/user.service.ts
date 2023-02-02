@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { emit } from 'process';
 import { Repository } from 'typeorm';
@@ -11,7 +11,7 @@ export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-  ) {}
+  ) { }
   create(createUserDto: CreateUserDto) {
     return 'This action adds a new user';
   }
@@ -27,6 +27,7 @@ export class UserService {
         isactive: true,
         avatar: true,
         email: true,
+        stateId: true
       },
     });
   }
@@ -38,8 +39,19 @@ export class UserService {
     });
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: number, updateUserDto: UpdateUserDto) {
+    const { username, firstname, lastname, email, positionId, stateId, isactive } = updateUserDto
+    await this.userRepository
+      .createQueryBuilder('language')
+      .update(User)
+      .set({ username: username, lastname: lastname, firstname: firstname, email: email, positionId: positionId, stateId: stateId, isactive: isactive })
+      .where('id = :id', { id: id })
+      .execute();
+
+    return {
+      status: HttpStatus.OK,
+      message: `Update successfully !`,
+    };
   }
 
   remove(id: number) {

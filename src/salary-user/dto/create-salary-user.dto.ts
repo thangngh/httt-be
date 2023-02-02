@@ -10,15 +10,10 @@ export class CreateSalaryUserDto {
   @ApiProperty()
   @IsNumber()
   @IsOptional()
-  positionId: number;
+  monthId: number;
 
   @ApiProperty()
   @IsNumber()
   @IsOptional()
   day: number;
-
-  @ApiProperty()
-  @IsNumber()
-  @IsOptional()
-  salary: number;
 }
